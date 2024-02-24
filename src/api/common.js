@@ -1,7 +1,18 @@
 import { Get } from "./request.js";
-const gatewayUrl = import.meta.env.PROD
-  ? "http://localhost:3000/"
-  : "http://localhost:8081/";
-export async function getServerAddr() {
-  return await Get(`${gatewayUrl}/addr`);
+
+let serverUrl = { t2i_addr: "http://123.123.110.133:8099" };
+
+async function _getServerAddr() {
+  return await Get(`/gateway/addr`);
 }
+
+async function getServerUrl() {
+  if (!serverUrl) {
+    const res = await _getServerAddr();
+    console.log(res, "zxzx");
+    serverUrl = res.data;
+  }
+  return serverUrl;
+}
+
+export { getServerUrl };

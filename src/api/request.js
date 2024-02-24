@@ -1,17 +1,17 @@
 import axios from "axios";
 const baseURL = import.meta.env.PROD
   ? "http://localhost:3000/"
-  : "http://localhost:8080/";
+  : "http://localhost:8010/";
 const instance = axios.create({
   baseURL,
   timeout: 3000,
 });
 instance.interceptors.response.use(
   function (response) {
-    return response;
+    return response.data ?? { code: "-1", msg: "no data" };
   },
   function (error) {
-    return Promise.resolve({ code: "-1", msg: error.toString() });
+    return Promise.resolve({ code: "-1", msg: error.response });
   },
 );
 
