@@ -19,18 +19,7 @@ function SubmitGenCmp() {
   }, []);
   return (
     <div>
-      <Form layout="horizontal" mode="card">
-        <Form.Item
-          label="样式模版"
-          trigger="onConfirm"
-          name="birthday"
-          onClick={(e, datePickerRef) => {
-            console.log(datePickerRef.current, "zxzx");
-            datePickerRef.current.open();
-          }}
-        >
-          <SelectStyle ref={selectStyleRef} />
-        </Form.Item>
+      <Form>
         <Form.Item label="您的照片">
           <ImageUploader
             value={fileList}
@@ -45,7 +34,6 @@ function SubmitGenCmp() {
                 width: 80,
                 height: 80,
                 borderRadius: 40,
-                backgroundColor: "#f5f5f5",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
