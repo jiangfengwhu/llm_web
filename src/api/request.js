@@ -1,7 +1,7 @@
 import axios from "axios";
 const baseURL = import.meta.env.PROD
-  ? "http://localhost:3000/"
-  : "http://localhost:8010/";
+  ? "http://120.46.72.66/"
+  : "http://120.46.72.66/";
 const instance = axios.create({
   baseURL,
   timeout: 3000,

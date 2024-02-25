@@ -5,7 +5,7 @@ function HotTemplateBlockCmp({ data }) {
   return (
     <div className={"grid grid-cols-2 gap-2 ml-2 mr-2"}>
       {data.map((ele) => {
-        return <HotItem key={ele} />;
+        return <HotItem key={ele.id} {...ele} />;
       })}
     </div>
   );
