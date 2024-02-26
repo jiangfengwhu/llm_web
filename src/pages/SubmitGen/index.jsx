@@ -1,33 +1,46 @@
-import { ImageUploader } from "antd-mobile";
+import { ImageUploader, Toast } from "antd-mobile";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { AddOutline } from "antd-mobile-icons";
 import GenButton from "../../components/GenButton/index.jsx";
 import { queueT2I, uploadImage } from "../../api/t2i.js";
+import { copyTextToClipboard } from "../../utils/common.js";
+import { useNavigate } from "react-router-dom";
 
 function SubmitGenCmp() {
   const [fileList, setFileList] = useState([]);
   const [submitting, setSubmitting] = useState(false);
+  const navigate = useNavigate();
   let fileName = useRef("");
   const onUploadImage = useCallback(async (file) => {
     const formData = new FormData();
     formData.append("image", file);
     formData.append("overwrite", "true");
     const data = await uploadImage(formData);
-    fileName.current = data?.name;
-    return { url: URL.createObjectURL(file) };
+    return { url: URL.createObjectURL(file), name: data?.name };
   }, []);
   const submit = useCallback(() => {
+    if (!fileName.current) {
+      Toast.show({ content: "请先上传图片", position: "bottom" });
+      return;
+    }
     setSubmitting(true);
-    console.log(fileName.current, "fileName");
     queueT2I({
       template_id: "test",
       images: { 13: fileName.current },
       type: "t2i",
     }).then((res) => {
-      console.log(res);
       setSubmitting(false);
+      if (res.data) {
+        const { prompt_id, output_prefix } = res.data;
+        const picId = `${prompt_id}$${output_prefix}`;
+        copyTextToClipboard(picId);
+        Toast.show({ content: "取图码已复制，请妥善保管", position: "bottom" });
+        navigate("/take-picture?id=" + picId, { replace: true });
+      } else {
+        Toast.show({ content: res.msg, position: "bottom" });
+      }
     });
-  }, []);
+  }, [navigate]);
   const imgUploadStyle = useMemo(() => {
     return {
       width: 160,
@@ -39,14 +52,18 @@ function SubmitGenCmp() {
       alignItems: "center",
     };
   }, []);
+  const fileChange = useCallback((list) => {
+    fileName.current = list[0]?.name;
+    setFileList(list);
+  }, []);
   return (
     <div>
       <div className={"flex flex-col items-center mt-10"}>
         <div className={"text-xl mb-10"}>请上传要生成的人像照片</div>
         <ImageUploader
           value={fileList}
-          style={{ "--cell-size": "90px" }}
-          onChange={setFileList}
+          style={{ "--cell-size": "160px" }}
+          onChange={fileChange}
           maxCount={1}
           showUpload={fileList.length < 1}
           upload={onUploadImage}
