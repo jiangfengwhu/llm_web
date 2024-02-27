@@ -1,7 +1,7 @@
 import axios from "axios";
 const baseURL = import.meta.env.PROD
-  ? "http://120.46.72.66/"
-  : "http://120.46.72.66/";
+  ? "http://120.46.72.66/api"
+  : "http://120.46.72.66/api";
 const instance = axios.create({
   baseURL,
   timeout: 3000,
