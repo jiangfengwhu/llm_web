@@ -4,7 +4,7 @@ import { AddOutline } from "antd-mobile-icons";
 import GenButton from "../../components/GenButton/index.jsx";
 import { queueT2I, uploadImage } from "../../api/t2i.js";
 import { copyTextToClipboard } from "../../utils/common.js";
-import { useNavigate } from "react-router-dom";
+import {useNavigate, useSearchParams} from "react-router-dom";
 
 function SubmitGenCmp() {
   const [fileList, setFileList] = useState([]);
@@ -18,6 +18,8 @@ function SubmitGenCmp() {
     const data = await uploadImage(formData);
     return { url: URL.createObjectURL(file), name: data?.name };
   }, []);
+  const [params] = useSearchParams();
+  const templateId = params.get("id") ?? "test";
   const submit = useCallback(() => {
     if (!fileName.current) {
       Toast.show({ content: "请先上传图片", position: "bottom" });
@@ -25,7 +27,7 @@ function SubmitGenCmp() {
     }
     setSubmitting(true);
     queueT2I({
-      template_id: "test",
+      template_id: templateId,
       images: { 13: fileName.current },
       type: "t2i",
     }).then((res) => {

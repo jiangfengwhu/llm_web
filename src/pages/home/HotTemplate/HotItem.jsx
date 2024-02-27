@@ -12,7 +12,7 @@ function HotItemCmp({ id, desc }) {
     });
   });
   const goSubmit = useCallback(() => {
-    navigate("/submit");
+    navigate("/submit?id="+id);
   }, [navigate]);
   return (
     <div className={"shadow-md rounded-md overflow-hidden"} onClick={goSubmit}>
