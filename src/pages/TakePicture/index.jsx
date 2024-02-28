@@ -35,7 +35,9 @@ function TakePictureCmp() {
           setLoading(false);
           clearInterval(timer);
         }
-      });
+      }).catch(() => {
+        clearInterval(timer);
+      })
     };
     const timer = setInterval(() => {
       checkQueue(timer);
