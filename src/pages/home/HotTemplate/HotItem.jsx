@@ -12,13 +12,13 @@ function HotItemCmp({ id, desc }) {
     });
   });
   const goSubmit = useCallback(() => {
-    navigate("/submit?id="+id);
-  }, [navigate]);
+    navigate("/submit?id=" + id);
+  }, [id, navigate]);
   return (
     <div className={"shadow-md rounded-md overflow-hidden"} onClick={goSubmit}>
       <figure>
         <img
-          className={`aspect-[4/3] object-cover ${classes["img-ctn"]}`}
+          className={`aspect-[3/4] object-cover ${classes["img-ctn"]}`}
           src={`${resAddr}/res/template_cover/${id}.jpg`}
         />
       </figure>
