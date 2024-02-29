@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import classes from "./index.module.css";
 import { useNavigate } from "react-router-dom";
-import { t2iAddr } from "../../../api/common.js";
+import { t2iAddr } from "@/api/common.js";
 
 function HotItemCmp({ id, desc }) {
   const navigate = useNavigate();
