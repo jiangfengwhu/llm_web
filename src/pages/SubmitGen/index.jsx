@@ -1,10 +1,11 @@
 import { Button, ImageUploader, ImageViewer, Toast } from "antd-mobile";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { AddOutline } from "antd-mobile-icons";
 import GenButton from "../../components/GenButton/index.jsx";
-import { getT2IAddr, queueT2I, uploadImage } from "../../api/t2i.js";
+import { queueT2I, uploadImage } from "../../api/t2i.js";
 import { copyTextToClipboard } from "../../utils/common.js";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { t2iAddr } from "../../api/common.js";
 
 function SubmitGenCmp() {
   const [fileList, setFileList] = useState([]);
@@ -20,12 +21,6 @@ function SubmitGenCmp() {
   }, []);
   const [params] = useSearchParams();
   const templateId = params.get("id") ?? "test";
-  const [resAddr, setResAddr] = useState("");
-  useEffect(() => {
-    getT2IAddr().then((addr) => {
-      setResAddr(addr);
-    });
-  });
   const submit = useCallback(() => {
     if (!fileName.current) {
       Toast.show({ content: "请先上传图片", position: "bottom" });
@@ -48,7 +43,7 @@ function SubmitGenCmp() {
         Toast.show({ content: res.msg, position: "bottom" });
       }
     });
-  }, [navigate]);
+  }, [navigate, templateId]);
   const imgUploadStyle = useMemo(() => {
     return {
       width: 160,
@@ -66,16 +61,15 @@ function SubmitGenCmp() {
   }, []);
   const showDemoImage = () => {
     ImageViewer.show({
-      image: `${resAddr}/res/template_cover/${templateId}.jpg`,
+      image: `${t2iAddr}/res/template_cover/${templateId}.jpg`,
     });
   };
   return (
     <div>
       <div className={"flex flex-col items-center mt-10"}>
         <div className={"text-xl mb-10"}>请上传要生成的人像照片</div>
-        <Button className={"mb-10"} onClick={showDemoImage}>
-          样张预览
-        </Button>
+        <Button onClick={showDemoImage}>样张预览</Button>
+        <div className={"mt-10"} />
         <ImageUploader
           value={fileList}
           style={{ "--cell-size": "160px" }}

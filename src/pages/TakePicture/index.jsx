@@ -1,14 +1,14 @@
 import { memo, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Form, Image, Input } from "antd-mobile";
-import { getQueues, getT2IAddr } from "../../api/t2i.js";
+import { getQueues } from "../../api/t2i.js";
 import LoadingView from "../../components/loading/index.jsx";
+import { t2iAddr } from "../../api/common.js";
 
 function TakePictureCmp() {
   const [form] = Form.useForm();
   const [params] = useSearchParams();
   const [loading, setLoading] = useState(true);
-  const [imgBase, setImgBase] = useState("");
   const [desc, setDesc] = useState("");
   const code = params.get("id") ?? "";
   const [qId, oId] = code.split("$");
@@ -16,28 +16,27 @@ function TakePictureCmp() {
   const [outputId, setOutputId] = useState(oId);
 
   useEffect(() => {
-    getT2IAddr().then((addr) => {
-      setImgBase(addr);
-    });
     const checkQueue = () => {
-      getQueues().then((res) => {
-        const { queue_pending, queue_running } = res;
-        if (queue_pending.find((item) => item[1] === queueId)) {
-          setDesc(
-            `等待中，队列位置${
-              queue_pending.findIndex((item) => item[1] === queueId) + 1
-            }，请稍等`,
-          );
-        } else if (queue_running.find((item) => item[1] === queueId)) {
-          setDesc("进行中，请稍等，大概需要15秒左右");
-        } else {
-          setDesc("已完成");
-          setLoading(false);
+      getQueues()
+        .then((res) => {
+          const { queue_pending, queue_running } = res;
+          if (queue_pending.find((item) => item[1] === queueId)) {
+            setDesc(
+              `等待中，队列位置${
+                queue_pending.findIndex((item) => item[1] === queueId) + 1
+              }，请稍等`,
+            );
+          } else if (queue_running.find((item) => item[1] === queueId)) {
+            setDesc("进行中，请稍等，大概需要15秒左右");
+          } else {
+            setDesc("已完成");
+            setLoading(false);
+            clearInterval(timer);
+          }
+        })
+        .catch(() => {
           clearInterval(timer);
-        }
-      }).catch(() => {
-        clearInterval(timer);
-      })
+        });
     };
     const timer = setInterval(() => {
       checkQueue(timer);
@@ -65,7 +64,7 @@ function TakePictureCmp() {
         {loading ? (
           <LoadingView />
         ) : (
-          <Image src={`${imgBase}/res/${outputId}_00001_.png`} fit={"cover"} />
+          <Image src={`${t2iAddr}/res/${outputId}_00001_.png`} fit={"cover"} />
         )}
       </Form.Item>
     </Form>
