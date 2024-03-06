@@ -1,4 +1,5 @@
 import axios from "axios";
+import { Toast } from "antd-mobile";
 const baseURL = import.meta.env.PROD
   ? "http://120.46.72.66/api"
   : "http://120.46.72.66/api";
@@ -11,8 +12,9 @@ instance.interceptors.response.use(
     return response.data ?? { code: "-1", msg: "no data" };
   },
   function (error) {
+    Toast.show(error.message);
     return Promise.resolve({ code: "-1", msg: error.response });
-  },
+  }
 );
 
 async function Get(url, options) {
