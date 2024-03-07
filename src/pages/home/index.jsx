@@ -9,10 +9,10 @@ import React, {
 import { FloatingBubble, SpinLoading, Empty, Button } from "antd-mobile";
 import { PicturesOutline } from "antd-mobile-icons";
 import { useNavigate } from "react-router-dom";
-import { getTemplates } from "@/api/t2i.js";
-import { t2iAddr } from "@/api/common.js";
+import { getHome } from "@/api/t2i.js";
 import ImageMeasurerComponent from "./ImageMeasurer/index.jsx";
 import debounce from "lodash/debounce";
+import { t2iAddr } from "@/api/common.js";
 
 /**
  * TODO 问题：
@@ -42,17 +42,18 @@ const Home = React.memo(function HomeCmp() {
   // 加载数据
   const loadTemplates = () => {
     setLoading(true);
-    getTemplates()
+    getHome()
       .then(res => {
         const { data } = res ?? {};
+        // 填充url
         const realData = data?.map(item => {
           return {
             ...item,
-            url: `${t2iAddr}/res/template_cover/${item.id}.jpg`,
+            url: `${t2iAddr}/res/home/${item.url}`,
           };
         });
 
-        setData([...realData, ...realData, ...realData]);
+        setData(realData);
 
         // TODO 页面布局需要时间，但是目前没找到组件获取这个时间的props，所以先加一个delay
         setTimeout(() => {
@@ -89,7 +90,7 @@ const Home = React.memo(function HomeCmp() {
     if (imageMeasurerRef.current?.setMasonry?.recomputeCellPositions) {
       imageMeasurerRef.current.setMasonry.recomputeCellPositions();
     }
-  }, [client.viewportWidth, client.viewportHeight]);
+  }, [client.viewportWidth]);
 
   const bubbleStyle = useMemo(() => {
     return {
