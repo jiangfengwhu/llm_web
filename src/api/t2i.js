@@ -14,3 +14,7 @@ export async function queueT2I(data) {
 export async function getTemplates() {
   return await Get(`${t2iAddr}/gapi/templates`);
 }
+
+export async function getHome() {
+  return await Get(`${t2iAddr}/gapi/home`);
+}
