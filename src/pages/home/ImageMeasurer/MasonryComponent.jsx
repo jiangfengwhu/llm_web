@@ -4,16 +4,18 @@ import {
   createMasonryCellPositioner,
   Masonry,
 } from "react-virtualized";
+import {
+  defaultHeight,
+  defaultWidth,
+  keyMapper,
+  columnWidth,
+} from "./utils.js";
 
-export const columnWidth = 200;
-export const defaultHeight = 250;
-export const defaultWidth = columnWidth;
-export const keyMapper = (item, index) => index;
-// const
-
-const MasonryComponent = ({ itemsWithSizes, setRef, onClickItem, width }) => {
-  const viewportWidth = document.documentElement.clientWidth;
-  const viewportHeight = document.documentElement.clientHeight;
+const MasonryComponent = ({ itemsWithSizes, setRef, onClickItem, client }) => {
+  const viewportWidth =
+    client.viewportWidth ?? document.documentElement.clientWidth;
+  const viewportHeight =
+    client.viewportHeight ?? document.documentElement.clientHeight;
   // Default sizes help Masonry decide how many images to batch-measure
   const cache = new CellMeasurerCache({
     defaultHeight,

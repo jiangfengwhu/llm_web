@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  useRef,
+} from "react";
 // import HotTemplateBlock from "./HotTemplate/index.jsx";
 import { FloatingBubble, SpinLoading, Empty, Button } from "antd-mobile";
 import { PicturesOutline } from "antd-mobile-icons";
@@ -6,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { getTemplates } from "@/api/t2i.js";
 import { t2iAddr } from "@/api/common.js";
 import ImageMeasurerComponent from "./ImageMeasurer/index.jsx";
+import debounce from "lodash/debounce";
 
 /**
  * TODO 问题：
@@ -16,6 +23,11 @@ import ImageMeasurerComponent from "./ImageMeasurer/index.jsx";
 const Home = React.memo(function HomeCmp() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [client, setClient] = useState({
+    viewportWidth: document.documentElement.clientWidth,
+    viewportHeight: document.documentElement.clientHeight,
+  });
+  const imageMeasurerRef = useRef(null);
   const navigate = useNavigate();
   const goSubmit = useCallback(
     item => {
@@ -27,6 +39,7 @@ const Home = React.memo(function HomeCmp() {
     navigate("/take-picture");
   }, [navigate]);
 
+  // 加载数据
   const loadTemplates = () => {
     setLoading(true);
     getTemplates()
@@ -51,9 +64,32 @@ const Home = React.memo(function HomeCmp() {
       });
   };
 
+  const handleResize = debounce(() => {
+    // 在这里处理窗口大小变化的逻辑
+    setClient({
+      viewportWidth: document.documentElement.clientWidth,
+      viewportHeight: document.documentElement.clientHeight,
+    });
+  }, 300); // 设置防抖延迟时间，单位为毫秒
+
   useEffect(() => {
     loadTemplates();
   }, []);
+
+  useEffect(() => {
+    // 添加窗口大小变化的事件监听器，并在组件卸载时移除
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [handleResize]);
+
+  useEffect(() => {
+    // 重新计算并更新所有单元格的位置
+    if (imageMeasurerRef.current?.setMasonry?.recomputeCellPositions) {
+      imageMeasurerRef.current.setMasonry.recomputeCellPositions();
+    }
+  }, [client.viewportWidth, client.viewportHeight]);
 
   const bubbleStyle = useMemo(() => {
     return {
@@ -92,7 +128,12 @@ const Home = React.memo(function HomeCmp() {
       {loading ? <LoadingView /> : null}
       {/*{data?.length > 0 ? <HotTemplateBlock data={data} /> : <EmptyView />}*/}
       {data?.length > 0 ? (
-        <ImageMeasurerComponent data={data} onClickItem={onClickItem} />
+        <ImageMeasurerComponent
+          ref={imageMeasurerRef}
+          data={data}
+          client={client}
+          onClickItem={onClickItem}
+        />
       ) : (
         <EmptyView />
       )}
