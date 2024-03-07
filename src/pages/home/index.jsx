@@ -5,13 +5,12 @@ import { PicturesOutline } from "antd-mobile-icons";
 import { useNavigate } from "react-router-dom";
 import { getTemplates } from "@/api/t2i.js";
 import { t2iAddr } from "@/api/common.js";
-import ImageMeasurerComponent from "@pages/home/ImageMeasurer/index.jsx";
+import ImageMeasurerComponent from "./ImageMeasurer/index.jsx";
 
 /**
  * TODO 问题：
  * 1. 首次渲染拿到数据后，组件会有一个加载的过程，这个还没找到去哪里拿，这个时间还挺长的
  * 2. 需要监听下resize，然后更新瀑布流
- * 3. 进入上传页面在会退渲染有问题
  */
 
 const Home = React.memo(function HomeCmp() {
@@ -41,7 +40,11 @@ const Home = React.memo(function HomeCmp() {
         });
 
         setData([...realData, ...realData, ...realData]);
-        setLoading(false);
+
+        // TODO 页面布局需要时间，但是目前没找到组件获取这个时间的props，所以先加一个delay
+        setTimeout(() => {
+          setLoading(false);
+        }, 3000);
       })
       .catch(() => {
         setLoading(false);
@@ -85,7 +88,7 @@ const Home = React.memo(function HomeCmp() {
   };
 
   return (
-    <div className={"mt-2"}>
+    <div>
       {loading ? <LoadingView /> : null}
       {/*{data?.length > 0 ? <HotTemplateBlock data={data} /> : <EmptyView />}*/}
       {data?.length > 0 ? (
