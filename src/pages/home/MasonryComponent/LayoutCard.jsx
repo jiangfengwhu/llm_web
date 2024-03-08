@@ -1,4 +1,4 @@
-import { columnWidth } from "@pages/home/ImageMeasurer/utils.js";
+import { columnWidth } from "@pages/home/MasonryComponent/utils.js";
 
 const LayoutCard = ({ registerChild, style, onClick, item }) => {
   console.log(123123);

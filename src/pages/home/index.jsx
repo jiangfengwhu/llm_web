@@ -10,9 +10,10 @@ import { FloatingBubble, SpinLoading, Empty, Button } from "antd-mobile";
 import { PicturesOutline } from "antd-mobile-icons";
 import { useNavigate } from "react-router-dom";
 import { getHome } from "@/api/t2i.js";
-import ImageMeasurerComponent from "./ImageMeasurer/index.jsx";
+import MasonryComponent from "./MasonryComponent";
 import debounce from "lodash/debounce";
 import { t2iAddr } from "@/api/common.js";
+import { Zenitho } from "uvcanvas";
 
 /**
  * TODO 问题：
@@ -27,7 +28,7 @@ const Home = React.memo(function HomeCmp() {
     viewportWidth: document.documentElement.clientWidth,
     viewportHeight: document.documentElement.clientHeight,
   });
-  const imageMeasurerRef = useRef(null);
+  const masonryRef = useRef(null);
   const navigate = useNavigate();
   const goSubmit = useCallback(
     item => {
@@ -87,8 +88,8 @@ const Home = React.memo(function HomeCmp() {
 
   useEffect(() => {
     // 重新计算并更新所有单元格的位置
-    if (imageMeasurerRef.current?.setMasonry?.recomputeCellPositions) {
-      imageMeasurerRef.current.setMasonry.recomputeCellPositions();
+    if (masonryRef?.current?.setMasonry?.recomputeCellPositions) {
+      masonryRef?.current?.setMasonry?.recomputeCellPositions();
     }
   }, [client.viewportWidth]);
 
@@ -129,8 +130,8 @@ const Home = React.memo(function HomeCmp() {
       {loading ? <LoadingView /> : null}
       {/*{data?.length > 0 ? <HotTemplateBlock data={data} /> : <EmptyView />}*/}
       {data?.length > 0 ? (
-        <ImageMeasurerComponent
-          ref={imageMeasurerRef}
+        <MasonryComponent
+          ref={masonryRef}
           data={data}
           client={client}
           onClickItem={onClickItem}

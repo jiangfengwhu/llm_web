@@ -18,7 +18,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.22.1",
-    "react-virtualized": "^9.22.5"
+    "react-virtualized": "^9.22.5",
+    "uvcanvas": "^0.2.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.56",
