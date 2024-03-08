@@ -10,7 +10,6 @@ import { FloatingBubble, SpinLoading, Empty, Button } from "antd-mobile";
 import { PicturesOutline } from "antd-mobile-icons";
 import { useNavigate } from "react-router-dom";
 import { getHome } from "@/api/t2i.js";
-import MasonryComponent from "./MasonryComponent";
 import debounce from "lodash/debounce";
 import { t2iAddr } from "@/api/common.js";
 import { Zenitho } from "uvcanvas";
@@ -55,11 +54,11 @@ const Home = React.memo(function HomeCmp() {
         });
 
         setData(realData);
-
+        setLoading(false);
         // TODO 页面布局需要时间，但是目前没找到组件获取这个时间的props，所以先加一个delay
-        setTimeout(() => {
-          setLoading(false);
-        }, 3000);
+        // setTimeout(() => {
+        //   setLoading(false);
+        // }, 3000);
       })
       .catch(() => {
         setLoading(false);
@@ -130,13 +129,29 @@ const Home = React.memo(function HomeCmp() {
       {loading ? <LoadingView /> : null}
       {/*{data?.length > 0 ? <HotTemplateBlock data={data} /> : <EmptyView />}*/}
       {data?.length > 0 ? (
-        <MasonryComponent
-          ref={masonryRef}
-          data={data}
-          client={client}
-          onClickItem={onClickItem}
-        />
+        <div className="columns-6 ...">
+          {data.map((item, index) => {
+            return (
+              <div
+                key={index}
+                onClick={() => onClickItem(item)}
+                className="aspect-square mb-5">
+                <img
+                  src={item.url}
+                  alt={item.id}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            );
+          })}
+        </div>
       ) : (
+        // <MasonryComponent
+        //   ref={masonryRef}
+        //   data={data}
+        //   client={client}
+        //   onClickItem={onClickItem}
+        // />
         <EmptyView />
       )}
       {/*<InfiniteScroll loadMore={loadMore} hasMore={hasMore} />*/}
