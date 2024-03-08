@@ -68,8 +68,8 @@ const MasonryComponent = forwardRef(({ data, client, onClickItem }, ref) => {
                   src={item.url}
                   alt={item.id}
                   style={{
-                    height: defaultHeight, // 高度自定义
-                    width: columnWidth,
+                    height: item.height, // 高度自定义
+                    width: item.width,
                     display: "block",
                     borderRadius: 10,
                   }}
