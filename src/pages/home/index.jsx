@@ -1,33 +1,19 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-  useRef,
-} from "react";
-// import HotTemplateBlock from "./HotTemplate/index.jsx";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { FloatingBubble, SpinLoading, Empty, Button } from "antd-mobile";
 import { PicturesOutline } from "antd-mobile-icons";
 import { useNavigate } from "react-router-dom";
 import { getHome } from "@/api/t2i.js";
-import debounce from "lodash/debounce";
 import { t2iAddr } from "@/api/common.js";
 import { Zenitho } from "uvcanvas";
 
 /**
  * TODO 问题：
- * 1. 首次渲染拿到数据后，组件会有一个加载的过程，这个还没找到去哪里拿，这个时间还挺长的
- * 2. 需要监听下resize，然后更新瀑布流
+ * 1. 背景图展示不全，需要再优化一下
  */
 
 const Home = React.memo(function HomeCmp() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [client, setClient] = useState({
-    viewportWidth: document.documentElement.clientWidth,
-    viewportHeight: document.documentElement.clientHeight,
-  });
-  const masonryRef = useRef(null);
   const navigate = useNavigate();
   const goSubmit = useCallback(
     item => {
@@ -55,42 +41,15 @@ const Home = React.memo(function HomeCmp() {
 
         setData(realData);
         setLoading(false);
-        // TODO 页面布局需要时间，但是目前没找到组件获取这个时间的props，所以先加一个delay
-        // setTimeout(() => {
-        //   setLoading(false);
-        // }, 3000);
       })
       .catch(() => {
         setLoading(false);
       });
   };
 
-  const handleResize = debounce(() => {
-    // 在这里处理窗口大小变化的逻辑
-    setClient({
-      viewportWidth: document.documentElement.clientWidth,
-      viewportHeight: document.documentElement.clientHeight,
-    });
-  }, 300); // 设置防抖延迟时间，单位为毫秒
-
   useEffect(() => {
     loadTemplates();
   }, []);
-
-  useEffect(() => {
-    // 添加窗口大小变化的事件监听器，并在组件卸载时移除
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [handleResize]);
-
-  useEffect(() => {
-    // 重新计算并更新所有单元格的位置
-    if (masonryRef?.current?.setMasonry?.recomputeCellPositions) {
-      masonryRef?.current?.setMasonry?.recomputeCellPositions();
-    }
-  }, [client.viewportWidth]);
 
   const bubbleStyle = useMemo(() => {
     return {
@@ -125,43 +84,52 @@ const Home = React.memo(function HomeCmp() {
   };
 
   return (
-    <div>
-      {loading ? <LoadingView /> : null}
-      {/*{data?.length > 0 ? <HotTemplateBlock data={data} /> : <EmptyView />}*/}
-      {data?.length > 0 ? (
-        <div className="columns-6 ...">
-          {data.map((item, index) => {
-            return (
-              <div
-                key={index}
-                onClick={() => onClickItem(item)}
-                className="aspect-square mb-5">
-                <img
-                  src={item.url}
-                  alt={item.id}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            );
-          })}
-        </div>
-      ) : (
-        // <MasonryComponent
-        //   ref={masonryRef}
-        //   data={data}
-        //   client={client}
-        //   onClickItem={onClickItem}
-        // />
-        <EmptyView />
-      )}
-      {/*<InfiniteScroll loadMore={loadMore} hasMore={hasMore} />*/}
-      <FloatingBubble
-        axis="xy"
-        magnetic="x"
-        style={bubbleStyle}
-        onClick={goTakePicture}>
-        <PicturesOutline fontSize={28} />
-      </FloatingBubble>
+    <div className={"w-full h-full"}>
+      <div className={"fixed -z-50 w-full h-full box-border"}>
+        <Zenitho style={{ width: "100%", height: "100%" }} />
+      </div>
+
+      <div className={"flex justify-center items-center"}>
+        {loading ? (
+          <LoadingView />
+        ) : data?.length > 0 ? (
+          <div>
+            <div
+              className={
+                "mt-20 mb-20 text-5xl text-amber-300 text-center font-serif"
+              }>
+              绘图大师
+            </div>
+            <div
+              className={`max-w-screen-xl rounded-r-md rounded-t-md overflow-hidden xl:columns-6 lg:columns-5 md:columns-3 columns-2`}>
+              {data.map((item, index) => {
+                return (
+                  <div
+                    key={index}
+                    onClick={() => onClickItem(item)}
+                    className="aspect-square mb-3 w-52">
+                    <img
+                      src={item.url}
+                      alt={item.id}
+                      className="w-full object-cover "
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ) : (
+          <EmptyView />
+        )}
+        {/*<InfiniteScroll loadMore={loadMore} hasMore={hasMore} />*/}
+        <FloatingBubble
+          axis="xy"
+          magnetic="x"
+          style={bubbleStyle}
+          onClick={goTakePicture}>
+          <PicturesOutline fontSize={28} />
+        </FloatingBubble>
+      </div>
     </div>
   );
 });
