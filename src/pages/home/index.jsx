@@ -25,6 +25,15 @@ const Home = React.memo(function HomeCmp() {
     navigate("/take-picture");
   }, [navigate]);
 
+  // 洗牌算法
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1)); // 生成随机位置
+      [array[i], array[j]] = [array[j], array[i]]; // 交换当前元素和随机位置的元素
+    }
+    return array;
+  }
+
   // 加载数据
   const loadTemplates = () => {
     setLoading(true);
@@ -39,7 +48,9 @@ const Home = React.memo(function HomeCmp() {
           };
         });
 
-        setData(realData);
+        // 数据随机打乱
+        const shuffledData = shuffleArray(realData);
+        setData(shuffledData);
         setLoading(false);
       })
       .catch(() => {
@@ -101,7 +112,7 @@ const Home = React.memo(function HomeCmp() {
               绘图大师
             </div>
             <div
-              className={`max-w-screen-xl rounded-r-md rounded-t-md overflow-hidden xl:columns-6 lg:columns-5 md:columns-3 columns-2`}>
+              className={`max-w-screen-xl xl:columns-6 lg:columns-5 md:columns-3 columns-2`}>
               {data.map((item, index) => {
                 return (
                   <div
@@ -111,7 +122,7 @@ const Home = React.memo(function HomeCmp() {
                     <img
                       src={item.url}
                       alt={item.id}
-                      className="w-full object-cover "
+                      className="w-full object-cover rounded-md"
                     />
                   </div>
                 );
