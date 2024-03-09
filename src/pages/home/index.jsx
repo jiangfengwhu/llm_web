@@ -4,12 +4,17 @@ import { PicturesOutline } from "antd-mobile-icons";
 import { useNavigate } from "react-router-dom";
 import { getHome } from "@/api/t2i.js";
 import { t2iAddr } from "@/api/common.js";
-import { Velustro, Lumiflex, Novatrix } from "uvcanvas";
+import { Velustro, Lumiflex, Novatrix, Tranquiluxe } from "uvcanvas";
 
 /**
  * TODO 问题：
  * 1.
  */
+
+// 随机背景
+const uvCanvas = [Velustro, Lumiflex, Novatrix, Tranquiluxe];
+const CanvasBg =
+  uvCanvas[Math.floor(Math.random() * uvCanvas.length)] ?? Lumiflex;
 
 const Home = React.memo(function HomeCmp() {
   const [data, setData] = useState([]);
@@ -49,8 +54,8 @@ const Home = React.memo(function HomeCmp() {
         });
 
         // 数据随机打乱
-        const shuffledData = shuffleArray(realData);
-        setData(shuffledData);
+        // const shuffledData = shuffleArray(realData);
+        setData(realData);
         setLoading(false);
       })
       .catch(() => {
@@ -97,7 +102,7 @@ const Home = React.memo(function HomeCmp() {
   return (
     <div className={"w-full h-full"}>
       <div className={"fixed -z-50 w-full h-full box-border"}>
-        <Novatrix style={{ width: "100%", height: "100%" }} />
+        <CanvasBg style={{ width: "100%", height: "100%" }} />
       </div>
 
       <div className={"flex justify-center items-center"}>
@@ -118,7 +123,7 @@ const Home = React.memo(function HomeCmp() {
                   <div
                     key={index}
                     onClick={() => onClickItem(item)}
-                    className="aspect-square mb-3 w-52">
+                    className="aspect-square mb-3 w-full">
                     <img
                       src={item.url}
                       alt={item.id}
