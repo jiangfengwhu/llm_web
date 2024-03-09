@@ -4,11 +4,11 @@ import { PicturesOutline } from "antd-mobile-icons";
 import { useNavigate } from "react-router-dom";
 import { getHome } from "@/api/t2i.js";
 import { t2iAddr } from "@/api/common.js";
-import { Zenitho } from "uvcanvas";
+import { Velustro, Lumiflex, Novatrix } from "uvcanvas";
 
 /**
  * TODO 问题：
- * 1. 背景图展示不全，需要再优化一下
+ * 1.
  */
 
 const Home = React.memo(function HomeCmp() {
@@ -97,7 +97,7 @@ const Home = React.memo(function HomeCmp() {
   return (
     <div className={"w-full h-full"}>
       <div className={"fixed -z-50 w-full h-full box-border"}>
-        <Zenitho style={{ width: "100%", height: "100%" }} />
+        <Novatrix style={{ width: "100%", height: "100%" }} />
       </div>
 
       <div className={"flex justify-center items-center"}>
