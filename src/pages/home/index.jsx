@@ -54,8 +54,8 @@ const Home = React.memo(function HomeCmp() {
         });
 
         // 数据随机打乱
-        // const shuffledData = shuffleArray(realData);
-        setData(realData);
+        const shuffledData = shuffleArray(realData);
+        setData(shuffledData);
         setLoading(false);
       })
       .catch(() => {
