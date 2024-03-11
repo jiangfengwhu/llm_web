@@ -4,7 +4,7 @@ import { PicturesOutline } from "antd-mobile-icons";
 import { useNavigate } from "react-router-dom";
 import { getHome } from "@/api/t2i.js";
 import { t2iAddr } from "@/api/common.js";
-import { Velustro, Lumiflex, Novatrix, Tranquiluxe } from "uvcanvas";
+import { Lumiflex, Novatrix, Tranquiluxe } from "uvcanvas";
 
 /**
  * TODO 问题：
@@ -12,7 +12,7 @@ import { Velustro, Lumiflex, Novatrix, Tranquiluxe } from "uvcanvas";
  */
 
 // 随机背景
-const uvCanvas = [Velustro, Lumiflex, Novatrix, Tranquiluxe];
+const uvCanvas = [Lumiflex, Novatrix, Tranquiluxe];
 const CanvasBg =
   uvCanvas[Math.floor(Math.random() * uvCanvas.length)] ?? Lumiflex;
 
@@ -110,14 +110,14 @@ const Home = React.memo(function HomeCmp() {
           <LoadingView />
         ) : data?.length > 0 ? (
           <div>
+            {/*<div*/}
+            {/*  className={*/}
+            {/*    "mt-20 mb-20 text-5xl text-amber-300 text-center font-serif"*/}
+            {/*  }>*/}
+            {/*  绘图大师*/}
+            {/*</div>*/}
             <div
-              className={
-                "mt-20 mb-20 text-5xl text-amber-300 text-center font-serif"
-              }>
-              绘图大师
-            </div>
-            <div
-              className={`max-w-screen-xl xl:columns-6 lg:columns-5 md:columns-3 columns-2`}>
+              className={`max-w-screen-xl xl:columns-6 lg:columns-5 md:columns-3 columns-2 m-2`}>
               {data.map((item, index) => {
                 return (
                   <div
